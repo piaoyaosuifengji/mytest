@@ -1,0 +1,33 @@
+git config --global user.email "piaoyaosuifengji@sina.com"
+git config --global user.name "piaoyaosuifengji"
+
+
+
+ ssh-keygen -t rsa -C "piaoyaosuifengji@sina.com"
+
+
+1.获取源码：
+ git clone git@github.com:jianfengye/nginx-1.0.14_comment.git
+
+
+git clone git@github.com:piaoyaosuifengji/nginx-1.0.14_comment.git
+
+
+
+
+
+git clone https://github.com/piaoyaosuifengji/nginx-1.0.14_comment.git
+git remote add nginx-1.0.14_comment https://github.com/piaoyaosuifengji/nginx-1.0.14_comment.git
+git fetch nginx-1.0.14_comment
+
+https://github.com/piaoyaosuifengji/mytest.git
+
+
+git clone git@github.com:piaoyaosuifengji/mytest.git
+
+
+#添加文件脚本：
+git add *
+git commit  
+git push origin master
+
