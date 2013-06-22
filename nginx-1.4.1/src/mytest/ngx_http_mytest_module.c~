@@ -4,7 +4,7 @@
 
 #include <ngx_list.h>
 #include <ngx_http_request.h>
-
+static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r) ;
 static char *  
 ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)  
 {  
@@ -24,20 +24,22 @@ ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 
 
 
-
+/*commands数组用于定义模块的配置文件参数，每一个数组元素都是ngx_command_t类型，数组的结尾用ngx_null_command表示。Nginx在解析配置文件中的一个配置项时首先会遍历所有的模块，对于每一个模块而言，即通过遍历commands数组进行，另外，在数组中检查到ngx_null_command时，会停止使用当前模块解析该配置项，每一个ngx_command_t结构体定义了自己感兴趣的一个配置项：*/
 static ngx_command_t  ngx_http_mytest_commands[] = {  
  
     { ngx_string("mytest"),  
-NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LMT_CONF|NGX_CONF_NOARGS,  
-      ngx_http_mytest,  
-      NGX_HTTP_LOC_CONF_OFFSET,  
-      0,  
-      NULL },  
+NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_HTTP_LMT_CONF|NGX_CONF_NOARGS,  /*配置项类型，type将指定配置项可以出现的位置*/
+      ngx_http_mytest,  /*    //出现了name中指定的配置项后，将会调用set方法处理配置项的参数  ，就是配置文件的某个项目的值
+*/
+      NGX_HTTP_LOC_CONF_OFFSET,  /*通常用于使用预设的解析方法解析配置项，这是配置模块的一个优秀设计。它需要与conf配合使用，在第4章中详细介绍*/  
+      0,  /*//在配置文件中的偏移量  */
+      NULL /*//配置项读取后的处理方法，必须是ngx_conf_post_t结构的指针 */
+     },  
  
       ngx_null_command  
 }; 
 
-
+/*HTTP框架在读取、重载配置文件时定义了由ngx_http_module_t接口描述的8个阶段，HTTP框架在启动过程中会在每个阶段中调用ngx_http_module_t中相应的方法。当然，如果ngx_http_module_t中的某个回调方法设为NULL空指针，那么HTTP框架是不会调用它的。*/
 static ngx_http_module_t  ngx_http_mytest_module_ctx = {  
     NULL,                       /* preconfiguration */  
     NULL,                   /* postconfiguration */  
@@ -55,16 +57,16 @@ static ngx_http_module_t  ngx_http_mytest_module_ctx = {
 ngx_module_t  ngx_http_mytest_module = {  
     NGX_MODULE_V1,  
     &ngx_http_mytest_module_ctx,           /* module context */  
-    ngx_http_mytest_commands,              /* module directives */  
-    NGX_HTTP_MODULE,                       /* module type */  
-    NULL,                                  /* init master */  
+    ngx_http_mytest_commands,              /* module directives */  /* /*ctx用于指向一类模块的上下文结构体，为什么需要ctx呢？因为前面说过，Nginx模块有许多种类，不同类模块之间的功能差别很大。例如，事件类型的模块主要处理I/O事件相关的功能，HTTP类型的模块主要处理HTTP应用层的功能。这样，每个模块都有了自己的特性，而ctx将会指向特定类型模块的公共接口。例如，在HTTP模块中，ctx需要指向ngx_http_module_t结构体*/  
+    NGX_HTTP_MODULE,                       /* module type */  /*/*type表示该模块的类型，它与ctx指针是紧密相关的。在官方Nginx中，它的取值范围是以下5种：NGX_HTTP_MODULE、NGX_CORE_MODULE、NGX_CONF_MODULE、NGX_EVENT_MODULE、NGX_MAIL_MODULE。这5种模块间的关系参考图8-2。实际上，还可以自定义新的模块类型*/  
+    NULL,                                  /* init master */  /*下面是在Nginx的启动、停止过程中，以下7个函数指针表示有7个执行点会分别调用这7种方法*/
     NULL,                                  /* init module */  
     NULL,                                  /* init process */  
     NULL,                                  /* init thread */  
     NULL,                                  /* exit thread */  
     NULL,                                  /* exit process */  
     NULL,                                  /* exit master */  
-    NGX_MODULE_V1_PADDING  
+    NGX_MODULE_V1_PADDING  		  /*保留字段*/
 }; 
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)  
 {  
@@ -72,7 +74,7 @@ static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {  
         return NGX_HTTP_NOT_ALLOWED;  
     }  
- 
+ /*何必还要调用ngx_http_discard_request_body方法呢？其实这一步非常有意义，因为有些客户端可能会一直试图发送包体，而如果HTTP模块不接收发来的TCP流，有可能造成客户端发送超时。*/
     //丢弃请求中的包体  
     ngx_int_t rc = ngx_http_discard_request_body(r);  
     if (rc != NGX_OK) {  
