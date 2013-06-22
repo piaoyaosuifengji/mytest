@@ -221,6 +221,7 @@ objs/nginx:	objs/src/core/nginx.o \
 	objs/src/http/modules/ngx_http_upstream_least_conn_module.o \
 	objs/src/http/modules/ngx_http_upstream_keepalive_module.o \
 	objs/addon/mytest/ngx_http_mytest_module.o \
+	objs/addon/filetransfer/ngx_http_filetransfer_module.o \
 	objs/ngx_modules.o \
 	/usr/local/src/pcre-8.21/.libs/libpcre.a \
 	/usr/local/src/zlib-1.2.8/libz.a
@@ -337,6 +338,7 @@ objs/nginx:	objs/src/core/nginx.o \
 	objs/src/http/modules/ngx_http_upstream_least_conn_module.o \
 	objs/src/http/modules/ngx_http_upstream_keepalive_module.o \
 	objs/addon/mytest/ngx_http_mytest_module.o \
+	objs/addon/filetransfer/ngx_http_filetransfer_module.o \
 	objs/ngx_modules.o \
 	-lpthread -lcrypt /usr/local/src/pcre-8.21/.libs/libpcre.a /usr/local/src/openssl-1.0.1c/.openssl/lib/libssl.a /usr/local/src/openssl-1.0.1c/.openssl/lib/libcrypto.a -ldl /usr/local/src/zlib-1.2.8/libz.a
 	
@@ -1120,10 +1122,17 @@ objs/src/http/modules/ngx_http_upstream_keepalive_module.o:	$(CORE_DEPS) $(HTTP_
 
 
 objs/addon/mytest/ngx_http_mytest_module.o:	$(ADDON_DEPS) \
-	./src/mytest/ngx_http_mytest_module.c
+	/home/jty/code/nginx/mytest/nginx-1.4.1/src/mytest/ngx_http_mytest_module.c
 	$(CC) -c $(CFLAGS)  $(ALL_INCS) \
 		-o objs/addon/mytest/ngx_http_mytest_module.o \
-		./src/mytest/ngx_http_mytest_module.c
+		/home/jty/code/nginx/mytest/nginx-1.4.1/src/mytest/ngx_http_mytest_module.c
+
+
+objs/addon/filetransfer/ngx_http_filetransfer_module.o:	$(ADDON_DEPS) \
+	/home/jty/code/nginx/mytest/nginx-1.4.1/src/filetransfer/ngx_http_filetransfer_module.c
+	$(CC) -c $(CFLAGS)  $(ALL_INCS) \
+		-o objs/addon/filetransfer/ngx_http_filetransfer_module.o \
+		/home/jty/code/nginx/mytest/nginx-1.4.1/src/filetransfer/ngx_http_filetransfer_module.c
 
 
 /usr/local/src/pcre-8.21/pcre.h:	/usr/local/src/pcre-8.21/Makefile

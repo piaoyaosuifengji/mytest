@@ -151,7 +151,7 @@ cc -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -o objs/autotest objs/autotest.c
 ----------------------------------------
 checking for crypt()
 
-/tmp/ccr2n14Z.o: In function `main':
+/tmp/ccvz4XCF.o: In function `main':
 autotest.c:(.text+0x19): undefined reference to `crypt'
 collect2: error: ld returned 1 exit status
 ----------
@@ -256,7 +256,7 @@ checking for statvfs()
 ----------------------------------------
 checking for dlopen()
 
-/tmp/ccns7KBz.o: In function `main':
+/tmp/ccK3N015.o: In function `main':
 autotest.c:(.text+0x19): undefined reference to `dlopen'
 collect2: error: ld returned 1 exit status
 ----------
@@ -403,7 +403,7 @@ checking for time_t size
 ----------------------------------------
 checking for setproctitle()
 
-/tmp/cc5VdOQa.o: In function `main':
+/tmp/ccDYiNuT.o: In function `main':
 autotest.c:(.text+0x11): undefined reference to `setproctitle'
 collect2: error: ld returned 1 exit status
 ----------
@@ -460,7 +460,7 @@ checking for System V shared memory
 ----------------------------------------
 checking for POSIX semaphores
 
-/tmp/ccGF17iR.o: In function `main':
+/tmp/ccARyjyz.o: In function `main':
 autotest.c:(.text+0x2d): undefined reference to `sem_init'
 autotest.c:(.text+0x45): undefined reference to `sem_destroy'
 collect2: error: ld returned 1 exit status

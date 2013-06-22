@@ -6,18 +6,18 @@
 #include <ngx_http_request.h>
 static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r) ;
 
-void ngx_pool_cleanup_file(void *data)  
-{  
-    ngx_pool_cleanup_file_t  *c = data;  
- 
-    ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, c->log, 0, "file cleanup: fd:%d",c->fd);  
- 
-    if (ngx_close_file(c->fd) == NGX_FILE_ERROR) 
-    {  
-        ngx_log_error(NGX_LOG_ALERT, c->log, ngx_errno,  
-                      ngx_close_file_n " \"%s\" failed", c->name);  
-    }  
-} 
+/*void ngx_pool_cleanup_file(void *data)  */
+/*{  */
+/*    ngx_pool_cleanup_file_t  *c = data;  */
+/* */
+/*    ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, c->log, 0, "file cleanup: fd:%d",c->fd);  */
+/* */
+/*    if (ngx_close_file(c->fd) == NGX_FILE_ERROR) */
+/*    {  */
+/*        ngx_log_error(NGX_LOG_ALERT, c->log, ngx_errno,  */
+/*                      ngx_close_file_n " \"%s\" failed", c->name);  */
+/*    }  */
+/*} */
 
 
 static char *  
@@ -97,13 +97,13 @@ static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)
     }  
  
     /*设置返回的Content-Type。注意，ngx_str_t有一个很方便的初始化宏ngx_string，它可以把ngx_str_t的data和len成员都设置好*/  
-    ngx_str_t type = ngx_string("text/html");  
+    ngx_str_t type = ngx_string("text/plain");  
     //返回的包体内容  
-    ngx_str_t response = ngx_string("Hello World!");  
+/*    ngx_str_t response = ngx_string("Hello World!");  */
     //设置返回状态码  
     r->headers_out.status = NGX_HTTP_OK;  
     //响应包是有包体内容的，需要设置Content-Length长度  
-    r->headers_out.content_length_n = response.len;  
+/*    r->headers_out.content_length_n = response.len;  */
     //设置Content-Type  
     r->headers_out.content_type = type;  
  
@@ -115,12 +115,12 @@ static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)
  
 
     /*open a  file first*/
-    ngx_file_t file_t;
+/*    ngx_file_t file_t;*/
 
     ngx_buf_t *b; 
     b = ngx_palloc(r->pool, sizeof(ngx_buf_t)); 
     b->in_file=1;
-    u_char* filename = (u_char*)"/tmp/test.txt";  
+    u_char* filename = (u_char*)"/usr/local/nginx/html/index2.html";  
     b->file = ngx_pcalloc(r->pool, sizeof(ngx_file_t));  
     b->file->fd = ngx_open_file(filename, NGX_FILE_RDONLY|NGX_FILE_NONBLOCK, NGX_FILE_OPEN, 0);  
     b->file->log = r->connection->log;  

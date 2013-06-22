@@ -22,4 +22,7 @@ ps -ef | grep nginx
 
 加入自己的模块
 在执行configure --add-module=PATH命令
-./configure --sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/nginx.conf --pid-path=/usr/local/nginx/nginx.pid  --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.21 --with-zlib=/usr/local/src/zlib-1.2.8  --with-openssl=/usr/local/src/openssl-1.0.1c --add-module=/home/jty/code/nginx-1.4.1/src/mytest
+./configure --sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/nginx.conf --pid-path=/usr/local/nginx/nginx.pid  --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.21 --with-zlib=/usr/local/src/zlib-1.2.8  --with-openssl=/usr/local/src/openssl-1.0.1c --add-module=/home/jty/code/nginx/mytest/nginx-1.4.1/src/mytest --add-module=/home/jty/code/nginx/mytest/nginx-1.4.1/src/filetransfer
+
+/home/jty/code/nginx/mytest/nginx-1.4.1/src/mytest
+/home/jty/code/nginx/mytest/nginx-1.4.1/src/mytest
