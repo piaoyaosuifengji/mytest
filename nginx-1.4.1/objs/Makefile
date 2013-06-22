@@ -1120,10 +1120,10 @@ objs/src/http/modules/ngx_http_upstream_keepalive_module.o:	$(CORE_DEPS) $(HTTP_
 
 
 objs/addon/mytest/ngx_http_mytest_module.o:	$(ADDON_DEPS) \
-	/home/jty/code/nginx-1.4.1/src/mytest/ngx_http_mytest_module.c
+	./src/mytest/ngx_http_mytest_module.c
 	$(CC) -c $(CFLAGS)  $(ALL_INCS) \
 		-o objs/addon/mytest/ngx_http_mytest_module.o \
-		/home/jty/code/nginx-1.4.1/src/mytest/ngx_http_mytest_module.c
+		./src/mytest/ngx_http_mytest_module.c
 
 
 /usr/local/src/pcre-8.21/pcre.h:	/usr/local/src/pcre-8.21/Makefile
