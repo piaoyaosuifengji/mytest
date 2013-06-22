@@ -1,0 +1,6 @@
+
+
+
+
+PATH="$PATH:$STORM_HOME/bin"
+echo 'wuguomin2'
