@@ -57,7 +57,7 @@ static ngx_http_module_t  ngx_http_mytest_module_ctx = {
 ngx_module_t  ngx_http_mytest_module = {  
     NGX_MODULE_V1,  
     &ngx_http_mytest_module_ctx,           /* module context */  
-    ngx_http_mytest_commands,              /* module directives */  /* /*ctx用于指向一类模块的上下文结构体，为什么需要ctx呢？因为前面说过，Nginx模块有许多种类，不同类模块之间的功能差别很大。例如，事件类型的模块主要处理I/O事件相关的功能，HTTP类型的模块主要处理HTTP应用层的功能。这样，每个模块都有了自己的特性，而ctx将会指向特定类型模块的公共接口。例如，在HTTP模块中，ctx需要指向ngx_http_module_t结构体*/  
+    ngx_http_mytest_commands,              /* module directives */  /* ctx用于指向一类模块的上下文结构体，为什么需要ctx呢？因为前面说过，Nginx模块有许多种类，不同类模块之间的功能差别很大。例如，事件类型的模块主要处理I/O事件相关的功能，HTTP类型的模块主要处理HTTP应用层的功能。这样，每个模块都有了自己的特性，而ctx将会指向特定类型模块的公共接口。例如，在HTTP模块中，ctx需要指向ngx_http_module_t结构体*/  
     NGX_HTTP_MODULE,                       /* module type */  /*/*type表示该模块的类型，它与ctx指针是紧密相关的。在官方Nginx中，它的取值范围是以下5种：NGX_HTTP_MODULE、NGX_CORE_MODULE、NGX_CONF_MODULE、NGX_EVENT_MODULE、NGX_MAIL_MODULE。这5种模块间的关系参考图8-2。实际上，还可以自定义新的模块类型*/  
     NULL,                                  /* init master */  /*下面是在Nginx的启动、停止过程中，以下7个函数指针表示有7个执行点会分别调用这7种方法*/
     NULL,                                  /* init module */  
