@@ -4,8 +4,8 @@
 
 #include <ngx_list.h>
 #include <ngx_http_request.h>
-static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r) ;
 
+static ngx_int_t ngx_http_filetransfer_handler2(ngx_http_request_t *r) ;
 /*void ngx_pool_cleanup_file(void *data)  */
 /*{  */
 /*    ngx_pool_cleanup_file_t  *c = data;  */
@@ -30,7 +30,7 @@ ngx_http_filetransfer(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
  
     /*HTTP框架在处理用户请求进行到NGX_HTTP_CONTENT_PHASE阶段时，如果请求的主机域名、URI与filetransfer配置项所在的配置块相匹配，就将调用我们实现的ngx_http_filetransfer_handler方法处理这个请求*/  
 /*这个返回值可以是HTTP中响应包的返回码，其中包括了HTTP框架已经在/src/http/ngx_http_request.h文件中定义好的宏，如下所示。*/
-    clcf->handler = ngx_http_filetransfer_handler;  
+    clcf->handler = ngx_http_filetransfer_handler2;  
  
     return NGX_CONF_OK;  
 } 
@@ -83,27 +83,27 @@ ngx_module_t  ngx_http_filetransfer_module = {
     NULL,                                  /* exit master */  
     NGX_MODULE_V1_PADDING  		  /*保留字段*/
 }; 
-static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)  
+static ngx_int_t ngx_http_filetransfer_handler2(ngx_http_request_t *r)  
 {  
     //必须是GET或者HEAD方法，否则返回405 Not Allowed  
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {  
         return NGX_HTTP_NOT_ALLOWED;  
     }  
- /*何必还要调用ngx_http_discard_request_body方法呢？其实这一步非常有意义，因为有些客户端可能会一直试图发送包体，而如果HTTP模块不接收发来的TCP流，有可能造成客户端发送超时。*/
+
     //丢弃请求中的包体  
     ngx_int_t rc = ngx_http_discard_request_body(r);  
     if (rc != NGX_OK) {  
         return rc;  
     }  
  
-    /*设置返回的Content-Type。注意，ngx_str_t有一个很方便的初始化宏ngx_string，它可以把ngx_str_t的data和len成员都设置好*/  
+
     ngx_str_t type = ngx_string("text/html");  
     //返回的包体内容  
-/*    ngx_str_t response = ngx_string("Hello World!");  */
+
     //设置返回状态码  
     r->headers_out.status = NGX_HTTP_OK;  
     //响应包是有包体内容的，需要设置Content-Length长度  
-/*    r->headers_out.content_length_n = response.len;  */
+
     //设置Content-Type  
     r->headers_out.content_type = type;  
  
@@ -114,13 +114,12 @@ static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)
     }  
  
 
-    /*open a  file first*/
-/*    ngx_file_t file_t;*/
+
 
     ngx_buf_t *b; 
     b = ngx_palloc(r->pool, sizeof(ngx_buf_t)); 
     b->in_file=1;
-    u_char* filename = (u_char*)"/usr/local/nginx/html/index2.html";  
+    u_char* filename = (u_char*)"/usr/local/nginx/html/Google.html";  
     b->file = ngx_pcalloc(r->pool, sizeof(ngx_file_t));  
     b->file->fd = ngx_open_file(filename, NGX_FILE_RDONLY|NGX_FILE_NONBLOCK, NGX_FILE_OPEN, 0);  
     b->file->log = r->connection->log;  
@@ -130,7 +129,7 @@ static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)
 	{  
 	    return NGX_HTTP_NOT_FOUND;  
 	} 
-     /*获取文件信息，存与&b->file->info*/
+    
     if (ngx_file_info(filename, &b->file->info) == NGX_FILE_ERROR) 
     {  
         return NGX_HTTP_INTERNAL_SERVER_ERROR;  
@@ -139,12 +138,12 @@ static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)
     r->headers_out.content_length_n = b->file->info.st_size; 
     b->file_pos = 0;  
     b->file_last = b->file->info.st_size; 
-    /*Nginx会异步地将整个文件高效地发送给用户，但是我们必须要求HTTP框架在响应发送完毕后关闭已经打开的文件句柄，否则将会出现句柄泄露问题。设置清理文件句柄也很简单，只需要定义一个ngx_pool_cleanup_t结构体*/
+   
     ngx_pool_cleanup_t* cln = ngx_pool_cleanup_add(r->pool, sizeof(ngx_pool_cleanup_file_t));  
     if (cln == NULL) {  
     return NGX_ERROR;  
     }  
-     /*设置好handler和data成员就有可能要求HTTP框架在请求结束前传入data成员回调handler方法。*/
+     
     cln->handler = ngx_pool_cleanup_file;  
     ngx_pool_cleanup_file_t  *clnclnf = cln->data;  
  
@@ -160,11 +159,57 @@ static ngx_int_t ngx_http_filetransfer_handler(ngx_http_request_t *r)
     //设置next为NULL  
     out.next = NULL;  
  
-    /*最后一步为发送包体，发送结束后HTTP框架会调用ngx_http_finalize_request方法结束请求*/  
+     
     return ngx_http_output_filter(r, &out);  
 } 
 
 
+/*static ngx_int_t ngx_http_filetransfer_handler2(ngx_http_request_t *r)  */
+/*{*/
+/*    //丢弃请求中的包体  */
+/*    ngx_int_t rc = ngx_http_discard_request_body(r);  */
+/*    if (rc != NGX_OK) {  */
+/*        return rc;  */
+/*    }  */
+/*    ngx_str_t type = ngx_string("text/html");  */
+/*    //返回的包体内容  */
+/*    ngx_str_t response = ngx_string("<!DOCTYPE html> <html></head><body><h1>Welcome to nginx! here is code</h1></body></html>");  */
+/*    //设置返回状态码  */
+/*    r->headers_out.status = NGX_HTTP_OK;  */
+/*    //响应包是有包体内容的，需要设置Content-Length长度  */
+/*    r->headers_out.content_length_n = response.len;  */
+/*    //设置Content-Type  */
+/*    r->headers_out.content_type = type;  */
+/* */
+/*    //发送HTTP头部  */
+/*    rc = ngx_http_send_header(r);  */
+/*    if (rc == NGX_ERROR || rc > NGX_OK || r->header_only) {  */
+/*        return rc;  */
+/*    }  */
+/* /////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*    //构造ngx_buf_t结构体准备发送包体  */
+/*    ngx_buf_t *b;  */
+/*    b = ngx_create_temp_buf(r->pool, response.len);  */
+/*    if (b == NULL) {  */
+/*        return NGX_HTTP_INTERNAL_SERVER_ERROR;  */
+/*    }  */
+/*    //将Hello World复制到ngx_buf_t指向的内存中  */
+/*    ngx_memcpy(b->pos, response.data, response.len);  */
+/*    //注意，一定要设置好last指针  */
+/*    b->last = b->pos + response.len;  */
+/*    //声明这是最后一块缓冲区  */
+/*    b->last_buf = 1;  */
+/*  /////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*    //构造发送时的ngx_chain_t结构体  */
+/*    ngx_chain_t out;  */
+/*    //赋值ngx_buf_t  */
+/*    out.buf = b;  */
+/*    //设置next为NULL  */
+/*    out.next = NULL;  */
+/* */
+
+/*    return ngx_http_output_filter(r, &out);  */
+/*}*/
 
 
 
