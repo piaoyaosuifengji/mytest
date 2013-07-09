@@ -3,8 +3,8 @@
  * Copyright (C) Igor Sysoev
  * Copyright (C) Nginx, Inc.
  */
-
-
+//#include <stdio.h>
+#include "../fileOperating.h"
 #ifndef _NGX_CONFIG_H_INCLUDED_
 #define _NGX_CONFIG_H_INCLUDED_
 

@@ -1,4 +1,4 @@
-#define NGX_CONFIGURE " --sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/nginx.conf --pid-path=/usr/local/nginx/nginx.pid --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.21 --with-zlib=/usr/local/src/zlib-1.2.8 --with-openssl=/usr/local/src/openssl-1.0.1c --add-module=./src/mytest --add-module=./src/filetransfer"
+#define NGX_CONFIGURE " --sbin-path=/usr/local/nginx/nginx --conf-path=/usr/local/nginx/nginx.conf --pid-path=/usr/local/nginx/nginx.pid --with-http_ssl_module --with-pcre=/usr/local/src/pcre-8.21 --with-zlib=/usr/local/src/zlib-1.2.8 --with-openssl=/usr/local/src/openssl-1.0.1c --add-module=/home/jty/code/nginx-1.4.1/src/mytest"
 
 #ifndef NGX_COMPILER
 #define NGX_COMPILER  "gcc 4.7.3 (Ubuntu/Linaro 4.7.3-1ubuntu1) "

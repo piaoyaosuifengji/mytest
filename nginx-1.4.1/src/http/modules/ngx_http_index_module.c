@@ -129,7 +129,7 @@ ngx_http_index_handler(ngx_http_request_t *r)
 
     index = ilcf->indices->elts;
     for (i = 0; i < ilcf->indices->nelts; i++) {
-
+/*检查请求的url的结尾字符是不是斜杠‘/’，如果是说明请求的不是一个文件，给后续的handler去处理，比如后续的 ngx_http_autoindex_handler*/
         if (index[i].lengths == NULL) {
 
             if (index[i].name.data[0] == '/') {
@@ -160,7 +160,7 @@ ngx_http_index_handler(ngx_http_request_t *r)
         }
 
         if (reserve > allocated) {
-
+/*该函数的作用是把请求的http协议的路径转化成一个文件系统的路径。*/
             name = ngx_http_map_uri_to_path(r, &path, &root, reserve);
             if (name == NULL) {
                 return NGX_ERROR;
@@ -213,7 +213,7 @@ ngx_http_index_handler(ngx_http_request_t *r)
         if (ngx_http_set_disable_symlinks(r, clcf, &path, &of) != NGX_OK) {
             return NGX_HTTP_INTERNAL_SERVER_ERROR;
         }
-
+/*根据转化出来的具体路径，去打开文件*/
         if (ngx_open_cached_file(clcf->open_file_cache, &path, &of, r->pool)
             != NGX_OK)
         {

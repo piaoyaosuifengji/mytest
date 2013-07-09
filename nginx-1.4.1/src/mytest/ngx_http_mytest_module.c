@@ -4,6 +4,14 @@
 
 #include <ngx_list.h>
 #include <ngx_http_request.h>
+
+#include "../fileOperating.h"
+extern void createFile(char * fileName);
+/*
+
+HTTP框架在NGX_HTTP_CONTENT_PHASE阶段就会调用到我们实现的ngx_http_mytest_handler方法来处理这个用户请求。事实上，HTTP框架共定义了11个阶段（第三方HTTP模块只能介入其中的7个阶段处理请求，详见10.6节），本章只关注NGX_HTTP_CONTENT_PHASE处理阶段，多数HTTP模块都在此阶段实现相关功能。下面简单说明一下这11个阶段。
+
+*/
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r) ;
 static char *  
 ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)  
@@ -70,6 +78,12 @@ ngx_module_t  ngx_http_mytest_module = {
 }; 
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)  
 {  
+
+    createFile("/tmp/nginxtmp");
+    createFile("/tmp/nginxtmp2");
+/*	FILE * myfile=fopen("/tmp/nginxtmp", "w+");*/
+/*	fclose(myfile);*/
+
     //必须是GET或者HEAD方法，否则返回405 Not Allowed  
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {  
         return NGX_HTTP_NOT_ALLOWED;  

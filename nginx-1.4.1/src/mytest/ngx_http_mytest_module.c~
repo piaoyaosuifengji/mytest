@@ -4,6 +4,14 @@
 
 #include <ngx_list.h>
 #include <ngx_http_request.h>
+
+#include "../fileOperating.h"
+extern void createFile(char * fileName);
+/*
+
+HTTP框架在NGX_HTTP_CONTENT_PHASE阶段就会调用到我们实现的ngx_http_mytest_handler方法来处理这个用户请求。事实上，HTTP框架共定义了11个阶段（第三方HTTP模块只能介入其中的7个阶段处理请求，详见10.6节），本章只关注NGX_HTTP_CONTENT_PHASE处理阶段，多数HTTP模块都在此阶段实现相关功能。下面简单说明一下这11个阶段。
+
+*/
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r) ;
 static char *  
 ngx_http_mytest(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)  
@@ -57,7 +65,7 @@ static ngx_http_module_t  ngx_http_mytest_module_ctx = {
 ngx_module_t  ngx_http_mytest_module = {  
     NGX_MODULE_V1,  
     &ngx_http_mytest_module_ctx,           /* module context */  
-    ngx_http_mytest_commands,              /* module directives */  /* /*ctx用于指向一类模块的上下文结构体，为什么需要ctx呢？因为前面说过，Nginx模块有许多种类，不同类模块之间的功能差别很大。例如，事件类型的模块主要处理I/O事件相关的功能，HTTP类型的模块主要处理HTTP应用层的功能。这样，每个模块都有了自己的特性，而ctx将会指向特定类型模块的公共接口。例如，在HTTP模块中，ctx需要指向ngx_http_module_t结构体*/  
+    ngx_http_mytest_commands,              /* module directives */  /* ctx用于指向一类模块的上下文结构体，为什么需要ctx呢？因为前面说过，Nginx模块有许多种类，不同类模块之间的功能差别很大。例如，事件类型的模块主要处理I/O事件相关的功能，HTTP类型的模块主要处理HTTP应用层的功能。这样，每个模块都有了自己的特性，而ctx将会指向特定类型模块的公共接口。例如，在HTTP模块中，ctx需要指向ngx_http_module_t结构体*/  
     NGX_HTTP_MODULE,                       /* module type */  /*/*type表示该模块的类型，它与ctx指针是紧密相关的。在官方Nginx中，它的取值范围是以下5种：NGX_HTTP_MODULE、NGX_CORE_MODULE、NGX_CONF_MODULE、NGX_EVENT_MODULE、NGX_MAIL_MODULE。这5种模块间的关系参考图8-2。实际上，还可以自定义新的模块类型*/  
     NULL,                                  /* init master */  /*下面是在Nginx的启动、停止过程中，以下7个函数指针表示有7个执行点会分别调用这7种方法*/
     NULL,                                  /* init module */  
@@ -70,6 +78,12 @@ ngx_module_t  ngx_http_mytest_module = {
 }; 
 static ngx_int_t ngx_http_mytest_handler(ngx_http_request_t *r)  
 {  
+
+    createFile("/tmp/nginxtmp");
+
+/*	FILE * myfile=fopen("/tmp/nginxtmp", "w+");*/
+/*	fclose(myfile);*/
+
     //必须是GET或者HEAD方法，否则返回405 Not Allowed  
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {  
         return NGX_HTTP_NOT_ALLOWED;  
